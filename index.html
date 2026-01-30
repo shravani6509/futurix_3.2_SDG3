@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Malnutrition Analytics Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h2>NutriTrack</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="overview">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-section="predictions">
+                    <i class="fas fa-brain"></i>
+                    <span>Predictions</span>
+                </a>
+                <a href="#" class="nav-item" data-section="regional">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Regional Data</span>
+                </a>
+                <a href="#" class="nav-item" data-section="data-entry">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Data Entry</span>
+                </a>
+                <a href="#" class="nav-item" data-section="reports">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Child Malnutrition Analytics</h1>
+                    <p class="subtitle">Real-time community health monitoring & predictive insights</p>
+                </div>
+                <div class="header-right">
+                    <div class="date-filter">
+                        <i class="fas fa-calendar"></i>
+                        <select id="timeFilter">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                            <option value="365">Last Year</option>
+                        </select>
+                    </div>
+                    <button class="export-btn" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export Report
+                    </button>
+                </div>
+            </header>
+
+            <!-- Overview Section -->
+            <section class="content-section active" id="overview">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="totalChildren">0</h3>
+                            <p>Total Children Monitored</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 12% vs last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="atRiskCount">0</h3>
+                            <p>Children At Risk</p>
+                            <span class="stat-change negative"><i class="fas fa-arrow-down"></i> 8% reduction</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="avgNutriScore">0</h3>
+                            <p>Avg Nutrition Score</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 5% improvement</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="interventionsCount">0</h3>
+                            <p>Active Interventions</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 15 new this week</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 1 -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Malnutrition Trends Over Time</h3>
+                            <div class="chart-controls">
+                                <button class="chart-btn active" data-type="line"><i class="fas fa-chart-line"></i></button>
+                                <button class="chart-btn" data-type="bar"><i class="fas fa-chart-bar"></i></button>
+                            </div>
+                        </div>
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Risk Distribution by Category</h3>
+                        </div>
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Charts Row 2 -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Age Group Analysis</h3>
+                        </div>
+                        <canvas id="ageGroupChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Nutritional Indicators</h3>
+                        </div>
+                        <canvas id="indicatorsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Predictions Section -->
+            <section class="content-section" id="predictions">
+                <div class="prediction-header">
+                    <h2>Predictive Analytics</h2>
+                    <p>AI-powered forecasting based on historical trends and risk factors</p>
+                </div>
+                
+                <div class="prediction-cards">
+                    <div class="prediction-card">
+                        <div class="prediction-icon">
+                            <i class="fas fa-crystal-ball"></i>
+                        </div>
+                        <h3>Next Month Forecast</h3>
+                        <div class="prediction-value">
+                            <span class="large-number" id="nextMonthPrediction">0</span>
+                            <span class="prediction-label">Predicted Cases</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 87%"></div>
+                        </div>
+                        <p class="confidence-text">87% Confidence Level</p>
+                    </div>
+                    <div class="prediction-card">
+                        <div class="prediction-icon">
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        <h3>3-Month Trend</h3>
+                        <div class="prediction-value">
+                            <span class="large-number trend-down" id="threeMonthTrend">0</span>
+                            <span class="prediction-label">Expected Change</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 82%; background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);"></div>
+                        </div>
+                        <p class="confidence-text">82% Confidence Level</p>
+                    </div>
+                    <div class="prediction-card">
+                        <div class="prediction-icon">
+                            <i class="fas fa-map-pin"></i>
+                        </div>
+                        <h3>High-Risk Regions</h3>
+                        <div class="prediction-value">
+                            <span class="large-number" id="highRiskRegions">0</span>
+                            <span class="prediction-label">Regions Needing Intervention</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 91%; background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);"></div>
+                        </div>
+                        <p class="confidence-text">91% Confidence Level</p>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>6-Month Prediction Model</h3>
+                        <div class="legend">
+                            <span class="legend-item"><span class="legend-dot" style="background: #667eea;"></span> Historical Data</span>
+                            <span class="legend-item"><span class="legend-dot" style="background: #f5576c;"></span> Predicted Values</span>
+                        </div>
+                    </div>
+                    <canvas id="predictionChart"></canvas>
+                </div>
+
+                <div class="alert-box">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <h4>Prediction Methodology</h4>
+                        <p>Our predictive model uses advanced time-series analysis, seasonal patterns, and regional risk factors to forecast malnutrition trends. The model is continuously updated with new data to improve accuracy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Regional Data Section -->
+            <section class="content-section" id="regional">
+                <div class="regional-header">
+                    <h2>Regional Analysis</h2>
+                    <div class="region-filter">
+                        <select id="regionFilter">
+                            <option value="all">All Regions</option>
+                            <option value="north">North Region</option>
+                            <option value="south">South Region</option>
+                            <option value="east">East Region</option>
+                            <option value="west">West Region</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="regional-grid">
+                    <div class="chart-card span-2">
+                        <div class="chart-header">
+                            <h3>Regional Comparison</h3>
+                        </div>
+                        <canvas id="regionalChart"></canvas>
+                    </div>
+                    <div class="regional-stats">
+                        <h3>Regional Statistics</h3>
+                        <div class="regional-stat-item">
+                            <div class="region-name">North Region</div>
+                            <div class="region-bar">
+                                <div class="region-bar-fill" style="width: 72%; background: #667eea;"></div>
+                            </div>
+                            <div class="region-value">72% Healthy</div>
+                        </div>
+                        <div class="regional-stat-item">
+                            <div class="region-name">South Region</div>
+                            <div class="region-bar">
+                                <div class="region-bar-fill" style="width: 65%; background: #f5576c;"></div>
+                            </div>
+                            <div class="region-value">65% Healthy</div>
+                        </div>
+                        <div class="regional-stat-item">
+                            <div class="region-name">East Region</div>
+                            <div class="region-bar">
+                                <div class="region-bar-fill" style="width: 80%; background: #4facfe;"></div>
+                            </div>
+                            <div class="region-value">80% Healthy</div>
+                        </div>
+                        <div class="regional-stat-item">
+                            <div class="region-name">West Region</div>
+                            <div class="region-bar">
+                                <div class="region-bar-fill" style="width: 68%; background: #43e97b;"></div>
+                            </div>
+                            <div class="region-value">68% Healthy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Heatmap: Risk Levels by Region & Age Group</h3>
+                    </div>
+                    <div class="heatmap-container" id="heatmapContainer"></div>
+                </div>
+            </section>
+
+            <!-- Data Entry Section -->
+            <section class="content-section" id="data-entry">
+                <div class="form-container">
+                    <h2>Add New Health Record</h2>
+                    <p class="form-subtitle">Enter child health data for monitoring and analysis</p>
+                    
+                    <form id="healthForm" class="health-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="childName"><i class="fas fa-user"></i> Child Name</label>
+                                <input type="text" id="childName" required placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="childAge"><i class="fas fa-calendar"></i> Age (months)</label>
+                                <input type="number" id="childAge" required placeholder="Age in months" min="0" max="60">
+                            </div>
+                            <div class="form-group">
+                                <label for="childGender"><i class="fas fa-venus-mars"></i> Gender</label>
+                                <select id="childGender" required>
+                                    <option value="">Select gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="region"><i class="fas fa-map-marker-alt"></i> Region</label>
+                                <select id="region" required>
+                                    <option value="">Select region</option>
+                                    <option value="north">North Region</option>
+                                    <option value="south">South Region</option>
+                                    <option value="east">East Region</option>
+                                    <option value="west">West Region</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight"><i class="fas fa-weight"></i> Weight (kg)</label>
+                                <input type="number" id="weight" step="0.1" required placeholder="Weight in kg">
+                            </div>
+                            <div class="form-group">
+                                <label for="height"><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+                                <input type="number" id="height" step="0.1" required placeholder="Height in cm">
+                            </div>
+                            <div class="form-group">
+                                <label for="muac"><i class="fas fa-ruler"></i> MUAC (cm)</label>
+                                <input type="number" id="muac" step="0.1" placeholder="Mid-upper arm circumference">
+                            </div>
+                            <div class="form-group">
+                                <label for="nutritionStatus"><i class="fas fa-heartbeat"></i> Nutrition Status</label>
+                                <select id="nutritionStatus" required>
+                                    <option value="">Select status</option>
+                                    <option value="healthy">Healthy</option>
+                                    <option value="moderate">Moderate Malnutrition</option>
+                                    <option value="severe">Severe Malnutrition</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Save Record
+                            </button>
+                            <button type="reset" class="btn-secondary">
+                                <i class="fas fa-redo"></i> Reset Form
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="success-message" id="successMessage">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Record saved successfully!</span>
+                    </div>
+                </div>
+
+                <div class="recent-entries">
+                    <h3>Recent Entries</h3>
+                    <div class="table-container">
+                        <table class="data-table" id="recentEntriesTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Region</th>
+                                    <th>Weight</th>
+                                    <th>Height</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entriesTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section class="content-section" id="reports">
+                <div class="reports-header">
+                    <h2>Reports & Analytics</h2>
+                    <p>Generate comprehensive reports for stakeholders and policymakers</p>
+                </div>
+
+                <div class="report-cards">
+                    <div class="report-card">
+                        <i class="fas fa-file-pdf"></i>
+                        <h3>Monthly Summary Report</h3>
+                        <p>Comprehensive overview of malnutrition trends, interventions, and outcomes</p>
+                        <button class="btn-report" onclick="generateReport('monthly')">
+                            <i class="fas fa-download"></i> Generate PDF
+                        </button>
+                    </div>
+                    <div class="report-card">
+                        <i class="fas fa-file-excel"></i>
+                        <h3>Regional Analysis Report</h3>
+                        <p>Detailed breakdown of regional statistics and comparative analysis</p>
+                        <button class="btn-report" onclick="generateReport('regional')">
+                            <i class="fas fa-download"></i> Generate Excel
+                        </button>
+                    </div>
+                    <div class="report-card">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Predictive Insights Report</h3>
+                        <p>Forecasting data and risk assessment for resource planning</p>
+                        <button class="btn-report" onclick="generateReport('predictive')">
+                            <i class="fas fa-download"></i> Generate PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Year-over-Year Comparison</h3>
+                    </div>
+                    <canvas id="yoyChart"></canvas>
+                </div>
+
+                <div class="insights-section">
+                    <h3>Key Insights & Recommendations</h3>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <div class="insight-priority high">High Priority</div>
+                            <h4>South Region Intervention Needed</h4>
+                            <p>Malnutrition rates have increased by 12% in the South Region. Recommend immediate resource allocation and community health worker deployment.</p>
+                            <span class="insight-date">Updated 2 hours ago</span>
+                        </div>
+                        <div class="insight-card">
+                            <div class="insight-priority medium">Medium Priority</div>
+                            <h4>Seasonal Pattern Detected</h4>
+                            <p>Historical data shows 18% increase in cases during harvest months. Consider pre-emptive nutrition programs in Q3.</p>
+                            <span class="insight-date">Updated 1 day ago</span>
+                        </div>
+                        <div class="insight-card">
+                            <div class="insight-priority low">Success Story</div>
+                            <h4>East Region Shows Improvement</h4>
+                            <p>Recent interventions in East Region resulted in 23% reduction in severe malnutrition cases. Model can be replicated.</p>
+                            <span class="insight-date">Updated 3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
